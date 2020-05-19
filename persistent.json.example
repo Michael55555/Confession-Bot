@@ -1,10 +1,7 @@
 {
   "presence": {
-    "type": "WATCHING",
-    "activity": "Maybe?",
+    "type": "LISTENING",
+    "activity": "confessions • @Confessions help",
     "status": "online"
-  },
-  "core": {
-      "version": "1"
   }
 }

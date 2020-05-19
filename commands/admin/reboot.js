@@ -1,4 +1,3 @@
-const { coreLog } = require("../../coreFunctions.js");
 module.exports = {
 	controls: {
 		name: "reboot",
@@ -11,7 +10,7 @@ module.exports = {
 	},
 	do: async message => {
 		await message.channel.send("Shutting down...");
-		await coreLog(`🔌 ${message.author.tag} (\`${message.author.id}\`) initiated a reboot`);
+		console.log(`🔌 ${message.author.tag} (\`${message.author.id}\`) initiated a reboot`);
 		return process.exit(0);
 	}
 };

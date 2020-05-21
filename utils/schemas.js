@@ -18,7 +18,8 @@ const settings = new Schema({
 		blocked: [String]
 	},
 	blocked: { type: Boolean, default: false },
-	premium: { type: Boolean, default: false }
+	premium: { type: Boolean, default: false },
+	premium_rep: { type: String }
 });
 
 module.exports = {

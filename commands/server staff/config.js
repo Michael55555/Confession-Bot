@@ -64,8 +64,8 @@ module.exports = {
 		if (!args[0]) {
 			let embed = new Discord.MessageEmbed()
 				.setTitle("Bot Settings")
-				.addField("Confessions Channel", `${(await showChannel(qServerDB.config.channels.confessions, message.guild, "Current Configuration:"))[0]}\nConfigure using \`${qServerDB.config.prefix}config confessions #channel\``)
-				.addField("Log Channel", `${(await showChannel(qServerDB.config.channels.logs, message.guild, "Current Configuration:"))[0]}\nConfigure using \`${qServerDB.config.prefix}config logs #channel\``)
+				.addField("Confessions Channel", `${(await showChannel(qServerDB.config.channels.confessions, message.guild, "Current Configuration"))[0]}\nConfigure using \`${qServerDB.config.prefix}config confessions #channel\``)
+				.addField("Log Channel (Premium)", `${(await showChannel(qServerDB.config.channels.logs, message.guild, "Current Configuration"))[0]}\nConfigure using \`${qServerDB.config.prefix}config logs #channel\``)
 				.addField("Prefix", `${Discord.escapeMarkdown(qServerDB.config.prefix)}\nConfigure using \`${qServerDB.config.prefix}config prefix ?\``)
 				.setColor("PINK");
 			return message.channel.send(embed);
@@ -82,6 +82,7 @@ module.exports = {
 		case "logs":
 		case "logchannel":
 		case "logschannel":
+			if (!qServerDB.premium) return message.channel.send(":x: Configuring a log channel is limited to __premium__ users. Get premium at https://www.patreon.com/confessionsbot");
 			if (!args[1]) return message.channel.send((await showChannel(qServerDB.config.channels.logs, message.guild, "Confession Log Channel"))[0]);
 			return message.channel.send((await handleChannelInput(args[1], message.guild, "logs", "confession log channel", true)));
 		case "prefix":

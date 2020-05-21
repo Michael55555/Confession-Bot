@@ -1,6 +1,6 @@
 const { developer } = require("../../config.json");
 const { core } = require("../../persistent.json");
-const { fetchUser } = require("../../coreFunctions.js");
+const { fetchUser, dbQueryAll } = require("../../coreFunctions.js");
 const humanizeDuration = require("humanize-duration");
 const ms = require("ms");
 module.exports = {
@@ -18,9 +18,10 @@ module.exports = {
 			let user = await fetchUser(developerId, client);
 			user ? developerArray.push(`${user.tag} (${user.id})`) : developerArray.push(`Unknown User (${developerId})`);
 		}
+		let premium = (await dbQueryAll("Server", {premium: true})).length;
 		let embed = new Discord.MessageEmbed()
 			.addField("Developers", developerArray.join("\n"))
-			.addField("Guild Count", client.guilds.cache.size)
+			.addField("Guild Count", `${client.guilds.cache.size} (${premium} premium)`)
 			.addField("Uptime", humanizeDuration(client.uptime))
 			.addField("Client Ping", `${Math.round(client.ws.ping)} ms`)
 			.setFooter(`${client.user.tag} v1`, client.user.displayAvatarURL)

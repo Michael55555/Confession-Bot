@@ -52,6 +52,7 @@ module.exports = {
 			let newValue = handleTrueFalse(args[2]);
 			if (![true, false].includes(newValue)) return message.channel.send(`Guild with ID \`${guildId}\` ${qServerDB.premium ? "has" : "does not have"} premium features.`);
 			qServerDB.premium = newValue;
+			if (newValue === false) qServerDB.premium_rep = null;
 			await dbModify("Server", { id: guildId }, qServerDB);
 			return message.channel.send(`:white_check_mark: Guild with ID \`${guildId}\` now ${qServerDB.premium ? "has" : "does not have"} access to premium features.`);
 		}

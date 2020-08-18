@@ -7,7 +7,8 @@ module.exports = {
 		usage: "db <query|modify> <collection> <query field> <query value> (modify:field) (modify:value)",
 		description: "Gets a database entry",
 		enabled: true,
-		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"]
+		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"],
+		dmAvailable: true
 	},
 	do: async (message, client, args, Discord) => {
 		if (args.length < 4) return message.channel.send(`:x: You must specify whether to query or modify, a collection name, query field, and query value.`);

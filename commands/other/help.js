@@ -1,4 +1,5 @@
 const { permLevelToRole, checkPermissions, dbQuery } = require("../../coreFunctions");
+const { prefix: defaultPrefix,  } = require("../../config");
 
 module.exports = {
 	controls: {
@@ -7,18 +8,23 @@ module.exports = {
 		aliases: ["command", "howto", "prefix"],
 		usage: "help (command name)",
 		description: "Shows command information",
-		enabled: true
+		enabled: true,
+		dmAvailable: true
 	},
 	do: async (message, client, args, Discord) => {
 
-		const qServerDB = await dbQuery("Server", {id: message.guild.id});
-		const prefix = qServerDB.config.prefix;
+		let prefix = defaultPrefix;
+		if (message.guild) {
+			const qServerDB = await dbQuery("Server", {id: message.guild.id});
+			prefix = qServerDB.config.prefix;
+		}
 
-		let permission = await checkPermissions(message.member, client);
+		let permission = await checkPermissions(message.member || message.author, client);
 
 		if (!args[0]) {
 			let embed = new Discord.MessageEmbed()
 				.setAuthor(`${client.user.username} Help`, client.user.displayAvatarURL({ format: "png" }))
+				.setDescription("Confessions is a bot that allows your server members to submit anonymous confessions!\n[Support](https://discord.gg/GGm6YuX)\n[Premium](https://www.patreon.com/confessionsbot)")
 				.addField("General Commands", client.commands.filter(c => c.controls.module === "other").map(c => `\`${prefix}${c.controls.usage}\` - ${c.controls.description}`))
 				.setColor("RANDOM");
 			if (permission <= 1) embed.addField("Staff Commands", client.commands.filter(c => c.controls.module === "server staff").map(c => `\`${prefix}${c.controls.usage}\` - ${c.controls.description}`));

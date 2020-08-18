@@ -10,7 +10,8 @@ module.exports = {
 		aliases: ["hi", "about", "bot"],
 		usage: "ping",
 		description: "Checks bot response time and shows information",
-		enabled: true
+		enabled: true,
+		dmAvailable: true
 	},
 	do: async (message, client, args, Discord) => {
 		let developerArray = [];
@@ -24,7 +25,7 @@ module.exports = {
 			.addField("Guild Count", `${client.guilds.cache.size} (${premium} premium)`)
 			.addField("Uptime", humanizeDuration(client.uptime))
 			.addField("Client Ping", `${Math.round(client.ws.ping)} ms`)
-			.setFooter(`${client.user.tag} v1`, client.user.displayAvatarURL)
+			.setFooter(`${client.user.tag} v1.1`, client.user.displayAvatarURL)
 			.setThumbnail(client.user.displayAvatarURL)
 			.setColor("RANDOM");
 		message.reply("👋 Hi there! Here's some info:", embed).then((sent) => {

@@ -11,7 +11,7 @@ module.exports = {
 	},
 	do: async (message, client, args) => {
 		if (message.guild.id !== "704005798837092473") return message.channel.send(":x: This command is only available in the support server. Use `@Confessions support` for the link.");
-		if (!message.member.roles.cache.has("708142308184293487")) return message.channel.send(":x: This command is limited to users with the **Premium** role.");
+		if (!message.member.roles.cache.has("708142308184293487")) return message.channel.send(":x: This command is limited to users with the **Premium** role. You can purchase premium at https://www.patreon.com/confessionsbot");
 		let qPremiumDB = await dbQueryNoNew("Server", { premium_rep: message.author.id });
 		if (qPremiumDB) return message.channel.send(":x: You have already activated premium for a server! Please contact a global admin to move your premium subscription.");
 		if (!args[0]) return message.channel.send(":x: You must specify a server ID!");

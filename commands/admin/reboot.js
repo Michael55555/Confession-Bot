@@ -6,7 +6,8 @@ module.exports = {
 		usage: "reboot",
 		description: "Reboots the bot by exiting the process",
 		enabled: true,
-		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"]
+		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+		dmAvailable: true
 	},
 	do: async message => {
 		await message.channel.send("Shutting down...");

@@ -7,7 +7,8 @@ module.exports = {
 		usage: "admin <block|premium> <id> (true/false)",
 		description: "Executes admin functions",
 		enabled: true,
-		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"]
+		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+		dmAvailable: true
 	},
 	do: async (message, client, args) => {
 		function handleTrueFalse (input) {
@@ -20,6 +21,7 @@ module.exports = {
 				return null;
 			}
 		}
+		if (!args[0]) return message.channel.send("You must specify `block` or `premium`.");
 		switch (args[0].toLowerCase()) {
 		case "block":
 			// eslint-disable-next-line no-case-declarations

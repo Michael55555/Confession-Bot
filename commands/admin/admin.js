@@ -1,8 +1,8 @@
-const { dbQuery, dbModify, fetchUser } = require("../../coreFunctions.js");
+const { dbQuery, dbModify, fetchUser, dbQueryAll } = require("../../coreFunctions.js");
 module.exports = {
 	controls: {
 		name: "admin",
-		permission: 0,
+		permission: 1,
 		aliases: ["adm"],
 		usage: "admin <block|premium> <id> (true/false)",
 		description: "Executes admin functions",
@@ -10,7 +10,7 @@ module.exports = {
 		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"],
 		dmAvailable: true
 	},
-	do: async (message, client, args) => {
+	do: async (message, client, args, Discord) => {
 		function handleTrueFalse (input) {
 			switch (input) {
 			case "true":
@@ -35,6 +35,15 @@ module.exports = {
 				if (!newValue) return message.channel.send(`User \`${user.tag}\` is ${qUserDB.blocked ? "" : "not "}blocked globally.`);
 				qUserDB.blocked = newValue;
 				await dbModify("User", { id: id }, qUserDB);
+				if (qUserDB.blocked) {
+					let confessions = await dbQueryAll("Confession", { author: id });
+					for await (let c of confessions) {
+						client.channels.cache.get(c.channel).messages.fetch(c.message).then(m => {
+							m.edit(new Discord.MessageEmbed(m.embeds[0])
+								.setDescription("*This confession has been reported by the community and deleted by a global moderator.*"));
+						}).catch(() => {});
+					}
+				}
 				return message.channel.send(`:white_check_mark: User \`${user.tag}\` is now ${qUserDB.blocked ? "" : "not "}blocked globally.`);
 			} else {
 				let qServerDB = await dbQuery("Server", { id: id });

@@ -22,7 +22,19 @@ const settings = new Schema({
 	premium_rep: { type: String }
 });
 
+const confession = new Schema({
+	guild: { type: String, required: true }, //guild id
+	channel: { type: String, required: true }, //channel id
+	message: { type: String, required: true }, //message id
+	author: { type: String, required: true },
+	reported: { type: Boolean, default: false },
+	reporter: String,
+	actioned: { type: Boolean, default: false },
+	actioned_by: String
+});
+
 module.exports = {
 	User: model("user", user, "users"),
-	Server: model("servers", settings, "settings")
+	Server: model("servers", settings, "settings"),
+	Confession: model("confessions", confession, "confessions")
 };

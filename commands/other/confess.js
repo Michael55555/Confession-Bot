@@ -1,4 +1,5 @@
 const { dbQuery } = require("../../coreFunctions");
+const { Confession } = require("../../utils/schemas");
 module.exports = {
 	controls: {
 		name: "confess",
@@ -62,10 +63,16 @@ module.exports = {
 							.setDescription(`"${collected.first().content}"`)
 							.setColor("RANDOM")
 							.setTimestamp();
-						client.channels.cache.get(qServerDB.config.channels.confessions).send(confessEmbed);
+						let c = await client.channels.cache.get(qServerDB.config.channels.confessions).send(confessEmbed);
 						confessEmbed.addField("User", `||${message.author.tag} (<@${message.author.id}>)||`)
 							.addField("ID", `||${message.author.id}||`);
 						if (qServerDB.config.channels.logs) client.channels.cache.get(qServerDB.config.channels.logs).send(confessEmbed);
+						await new Confession({
+							guild: c.guild.id,
+							channel: c.channel.id,
+							message: c.id,
+							author: message.author.id
+						}).save();
 						return sent.channel.send(`:+1: Your confession has been added to <#${qServerDB.config.channels.confessions}>!`);
 					}).catch(() => {
 						return sent.channel.send(`:x: Your confession timed out. If you'd still like to submit a confession, just run \`${qServerDB.config.prefix}confess\` again in a server channel!`);

@@ -32,7 +32,7 @@ module.exports = {
 			if (user) {
 				let qUserDB = await dbQuery("User", { id: id });
 				let newValue = handleTrueFalse(args[2]);
-				if (!newValue) return message.channel.send(`User \`${user.tag}\` is ${qUserDB.blocked ? "" : "not "}blocked globally.`);
+				if (![true,false].includes(newValue)) return message.channel.send(`User \`${user.tag}\` is ${qUserDB.blocked ? "" : "not "}blocked globally.`);
 				qUserDB.blocked = newValue;
 				await dbModify("User", { id: id }, qUserDB);
 				if (qUserDB.blocked) {

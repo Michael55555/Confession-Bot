@@ -15,7 +15,7 @@ module.exports = async (Discord, client) => {
 					console.log("premium removed", s.id);
 				}
 				await client.guilds.cache.get("704005798837092473").members.fetch(s.premium_rep).then(async m => {
-					if (!m || !m.roles.cache.has("708142308184293487")) await rmPremium();
+					if (!m || (!m.roles.cache.has("708142308184293487") && !m.roles.cache.has("746844013738328144"))) await rmPremium();
 				}).catch(async () => {
 					await rmPremium();
 				});

@@ -25,7 +25,7 @@ module.exports = {
 			.addField("Guild Count", `${client.guilds.cache.size} (${premium} premium)`)
 			.addField("Uptime", humanizeDuration(client.uptime))
 			.addField("Client Ping", `${Math.round(client.ws.ping)} ms`)
-			.setFooter(`${client.user.tag} v1.2`, client.user.displayAvatarURL)
+			.setFooter(`${client.user.tag} v1.3`, client.user.displayAvatarURL)
 			.setThumbnail(client.user.displayAvatarURL)
 			.setColor("RANDOM");
 		message.reply("👋 Hi there! Here's some info:", embed).then((sent) => {

@@ -3,7 +3,7 @@ const { findBestMatch } = require("string-similarity");
 module.exports = {
 	controls: {
 		name: "config",
-		permission: 1,
+		permission: 2,
 		aliases: ["cfg"],
 		usage: "config <element> (setting)",
 		description: "Configures various aspects of the bot",

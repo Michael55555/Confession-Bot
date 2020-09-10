@@ -2,7 +2,7 @@ const { dbQuery, dbModify, fetchUser } = require("../../coreFunctions");
 module.exports = {
 	controls: {
 		name: "confessban",
-		permission: 1,
+		permission: 2,
 		aliases: ["cban"],
 		usage: "confessban <user>",
 		description: "Disallows a user from submitting a confession",

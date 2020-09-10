@@ -1,10 +1,11 @@
-const { dbQuery, dbModify, fetchUser, dbQueryAll } = require("../../coreFunctions.js");
+const { dbQuery, dbModify, fetchUser, dbQueryAll, dbQueryNoNew } = require("../../coreFunctions.js");
+const support_invite = "GGm6YuX";
 module.exports = {
 	controls: {
 		name: "admin",
 		permission: 1,
 		aliases: ["adm"],
-		usage: "admin <block|premium> <id> (true/false)",
+		usage: "admin <block|premium|message> <id> (true/false/message)",
 		description: "Executes admin functions",
 		enabled: true,
 		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"],
@@ -21,7 +22,7 @@ module.exports = {
 				return null;
 			}
 		}
-		if (!args[0]) return message.channel.send("You must specify `block` or `premium`.");
+		if (!args[0]) return message.channel.send("You must specify `block`, `message`, or `premium`.");
 		switch (args[0].toLowerCase()) {
 		case "block":
 			// eslint-disable-next-line no-case-declarations
@@ -54,6 +55,33 @@ module.exports = {
 				await dbModify("Server", { id: id }, qServerDB);
 				return message.channel.send(`:white_check_mark: Guild with ID \`${id}\` is now ${qServerDB.blocked ? "" : "not "}blocked from using the bot.`);
 			}
+		case "message":
+			// eslint-disable-next-line no-case-declarations
+			let mid;
+			// eslint-disable-next-line no-case-declarations
+			let muser = (await fetchUser(args[1], client));
+			mid = muser ? muser.id : args[1];
+			if (muser) {
+				let m = args.splice(2).join(" ");
+				if (!m) return message.channel.send(":x: You must specify a message.");
+				muser.send(new Discord.MessageEmbed().setAuthor("Global Moderator Message", client.user.displayAvatarURL({ format: "png"})).setDescription(m).setFooter(`If you have any questions please join https://discord.gg/${support_invite} and contact our team`).setColor("RED")).then(() => {
+					return message.channel.send(`:white_check_mark: Successfully sent the message to \`${muser.tag}\`.`);
+				}).catch(() => {
+					return message.channel.send(`:x: Unable to send message to \`${muser.tag}\`.`);
+				});
+			} else {
+				if (!client.guilds.cache.get(mid)) return message.channel.send(":x: Guild not found");
+				let qServerDB = await dbQueryNoNew("Server", { id: mid });
+				if (!qServerDB.config.channels.confessions) return message.channel.send(":x: This server has no confessions channel set");
+				let m = args.splice(2).join(" ");
+				if (!m) return message.channel.send(":x: You must specify a message.");
+				client.channels.cache.get(qServerDB.config.channels.confessions).send(new Discord.MessageEmbed().setAuthor("Global Moderator Message", client.user.displayAvatarURL({ format: "png"})).setDescription(m).setFooter(`If you have any questions please join https://discord.gg/${support_invite} and contact our team`).setColor("RED")).then(() => {
+					return message.channel.send(`:white_check_mark: Successfully sent the message guild \`${mid}\`.`);
+				}).catch(() => {
+					return message.channel.send(`:x: Unable to send message to \`${mid}\`.`);
+				});
+			}
+			break;
 		case "premium":
 			// eslint-disable-next-line no-case-declarations
 			let guildId = args[1];

@@ -56,6 +56,7 @@ module.exports = {
 				return message.channel.send(`:white_check_mark: Guild with ID \`${id}\` is now ${qServerDB.blocked ? "" : "not "}blocked from using the bot.`);
 			}
 		case "message":
+		case "warn":
 			// eslint-disable-next-line no-case-declarations
 			let mid;
 			// eslint-disable-next-line no-case-declarations

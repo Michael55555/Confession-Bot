@@ -9,9 +9,9 @@ module.exports = {
 		permissions: ["VIEW_CHANNEL", "SEND_MESSAGES"],
 		dmAvailable: true
 	},
-	do: async message => {
+	do: async (message, client) => {
 		await message.channel.send("Shutting down...");
 		console.log(`🔌 ${message.author.tag} (\`${message.author.id}\`) initiated a reboot`);
-		return process.exit(0);
+		return client.shard.respawnAll();
 	}
 };

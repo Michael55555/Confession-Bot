@@ -23,11 +23,12 @@ module.exports = {
 				.addField("Guild", `${message.guild.name} (\`${message.guild.id}\`)`)
 				.addField("Reporter", `${message.author.tag} (\`${message.author.id}\`)`)
 				.addField("Action", `Use \`?admin block ${u.id} true\` to block the user from using the bot and clear their confessions`)
+				.setFooter("")
 				.setColor("RED");
-			await client.channels.cache.get(reports_channel).send(`<@&${global_mod}>`, embed);
+			await client.shard.broadcastEval(`if (this.channels.cache.get("${reports_channel}")) this.channels.cache.get("${reports_channel}").send({ content: "<@&${global_mod}>", embed: ${JSON.stringify(embed)} })`);
 			return message.channel.send(":white_check_mark: Your report has been submitted. A global moderator will review your case and potentially take action against the user who submitted the confession. For privacy reasons, the outcome of your report will not be shared.");
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 			return message.channel.send(":x: The confession message could not be fetched.");
 		}
 	}

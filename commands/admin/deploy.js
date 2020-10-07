@@ -30,7 +30,7 @@ module.exports = {
 			})
 			.then(async () => {
 				await generateEmbed("Shutting down");
-				return process.exit(0); // Stop the bot
+				return client.shard.respawnAll(); // Stop the bot
 			});
 
 		/**

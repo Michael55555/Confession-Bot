@@ -1,5 +1,4 @@
 const { developer } = require("../../config.json");
-const { core } = require("../../persistent.json");
 const { fetchUser, dbQueryAll } = require("../../coreFunctions.js");
 const humanizeDuration = require("humanize-duration");
 const ms = require("ms");
@@ -20,13 +19,15 @@ module.exports = {
 			user ? developerArray.push(`${user.tag} (${user.id})`) : developerArray.push(`Unknown User (${developerId})`);
 		}
 		let premium = (await dbQueryAll("Server", {premium: true})).length;
+		const guildCounts = await client.shard.fetchClientValues("guilds.cache.size"); // ['1006', '966']
+		const totalGuildCount = guildCounts.reduce((total, current) => total + current, 0);
 		let embed = new Discord.MessageEmbed()
 			.addField("Developers", developerArray.join("\n"))
-			.addField("Guild Count", `${client.guilds.cache.size} (${premium} premium)`)
-			.addField("Uptime", humanizeDuration(client.uptime))
-			.addField("Client Ping", `${Math.round(client.ws.ping)} ms`)
-			.setFooter(`${client.user.tag} v1.3`, client.user.displayAvatarURL)
-			.setThumbnail(client.user.displayAvatarURL)
+			.addField("Guild Count", `${totalGuildCount} (${premium} premium)`)
+			.addField("Shard Uptime", humanizeDuration(client.uptime))
+			.addField("Shard Ping", `${Math.round(client.ws.ping)} ms`)
+			.setFooter(`${client.user.tag} v1.4 - Shard ${client.shard.ids[0]}`, client.user.displayAvatarURL)
+			.setThumbnail(client.user.displayAvatarURL({ format: "png" }))
 			.setColor("RANDOM");
 		message.reply("👋 Hi there! Here's some info:", embed).then((sent) => {
 			embed.addField("Edit Time", ms(new Date().getTime() - sent.createdTimestamp));

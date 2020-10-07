@@ -1,8 +1,8 @@
 const { log_hooks } = require("../config.json");
 const { dbQueryAll, dbModify } = require("../coreFunctions");
 module.exports = async (Discord, client) => {
-	(new Discord.WebhookClient(log_hooks.core.id, log_hooks.core.token)).send(`:ok: Started with ${client.guilds.cache.size} servers`);
-	console.log(`Logged in as ${client.user.tag}!`);
+	(new Discord.WebhookClient(log_hooks.core.id, log_hooks.core.token)).send(`:ok: Started with ${client.guilds.cache.size} servers (Shard: ${client.shard.ids[0]})`);
+	console.log(`Logged in as ${client.user.tag}! (Shard: ${client.shard.ids[0]})`);
 	let premiumServers = await dbQueryAll("Server", {premium: true});
 	premiumServers.forEach(s => {
 		if (s.premium_rep) {

@@ -18,7 +18,8 @@ module.exports = {
 				m.delete();
 			}, 5000));
 		}
-		let guilds = client.guilds.cache.filter(g => g.members.cache.get(message.author.id)).array();
+		let allGuilds = await client.shard.broadcastEval(`this.guilds.cache.filter(g => g.members.cache.get("${message.author.id}")).array();`);
+		let guilds = allGuilds.reduce((p, c) => p.concat(c), []);
 		let choiceEmbed = new Discord.MessageEmbed()
 			.setTitle("Server Select")
 			.setColor("RANDOM")
@@ -63,18 +64,37 @@ module.exports = {
 							.setDescription(`"${collected.first().content}"`)
 							.setColor("RANDOM")
 							.setTimestamp();
-						let c = await client.channels.cache.get(qServerDB.config.channels.confessions).send(confessEmbed);
-						confessEmbed.addField("User", `||${message.author.tag} (<@${message.author.id}>)||`)
-							.addField("ID", `||${message.author.id}||`);
-						if (qServerDB.config.channels.logs) client.channels.cache.get(qServerDB.config.channels.logs).send(confessEmbed);
+						confessEmbed.footer = { text: "" };
+						let c = await client.shard.broadcastEval(`
+						if (this.guilds.cache.get("${guild.id}")) {
+							let embed = ${JSON.stringify(confessEmbed)};
+							this.channels.cache.get("${qServerDB.config.channels.confessions}").send({ embed }).then(c => {
+							embed.footer.text = \`If this confession is ToS-breaking or overtly hateful, you can report it using "?report \${c.id}"\`;
+							console.log(embed);
+							c.edit({ embed });
+							embed.fields.push({
+								name: "User",
+								value: "||${message.author.tag} (<@${message.author.id}>)||"
+							},
+							{
+								name: "ID", 
+								value: "||${message.author.id}||"
+							});
+							if (${qServerDB.config.channels.logs || false}) this.channels.cache.get("${qServerDB.config.channels.logs}").send({ embed });
+							return c;
+							});
+							}
+						`);
+						c = c.find(a => a);
 						await new Confession({
-							guild: c.guild.id,
-							channel: c.channel.id,
+							guild: c.guildID,
+							channel: c.channelID,
 							message: c.id,
 							author: message.author.id
 						}).save();
 						return sent.channel.send(`:+1: Your confession has been added to <#${qServerDB.config.channels.confessions}>!`);
-					}).catch(() => {
+					}).catch((e) => {
+						console.log(e);
 						return sent.channel.send(`:x: Your confession timed out. If you'd still like to submit a confession, just run \`${qServerDB.config.prefix}confess\` again in a server channel!`);
 					});
 				});

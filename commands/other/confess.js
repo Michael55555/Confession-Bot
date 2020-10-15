@@ -99,7 +99,8 @@ module.exports = {
 					});
 				});
 			} else return message.channel.send(":x: No server was found based on your input");
-		}).catch(() => {
+		}).catch((e) => {
+			console.log(e)
 			return m.channel.send(":x: Server selection timed out. If you'd still like to submit a confession, just run `confess` again in this DM!");
 		});
 	}

@@ -46,7 +46,7 @@ module.exports = {
 				let guild = guilds.find(g => g.num === parseInt(num));
 				let qServerDB = await dbQuery("Server", { id: guild.id });
 				if (!qServerDB.config.channels.confessions) return message.channel.send(`:x: **${guild.name}** has no confessions channel configured!`);
-				if (qServerDB.config.blocked.includes(message.author.id)) return message.channel.send(`:x: You are blocked from submitting confessions on **${message.guild.name}**.`);
+				if (qServerDB.config.blocked.includes(message.author.id)) return message.channel.send(`:x: You are blocked from submitting confessions on **${guild.name}**.`);
 				let embed = new Discord.MessageEmbed()
 					.setTitle(`Confession: ${guild.name}`)
 					.setDescription(`What would you like to confess? Reply to this message to submit your confession.\n\nYour confession will be __anonymously__ posted to <#${qServerDB.config.channels.confessions}> as soon as you reply.${qServerDB.config.channels.logs ? "\n> **Note:** Your confession will be logged in a private staff channel with your user information for moderation purposes." : ""}`)
@@ -101,7 +101,7 @@ module.exports = {
 			} else return message.channel.send(":x: No server was found based on your input");
 		}).catch((e) => {
 			console.log(e)
-			return m.channel.send(":x: Server selection timed out. If you'd still like to submit a confession, just run `confess` again in this DM!");
+			return m.channel.send(":x: Server selection timed out. If you'd still like to submit a confession, just run `confess` again in this DM!\n_If this happened immediately after selecting a server or submitting a confession, there may be an internal error - please contact our support team._");
 		});
 	}
 };

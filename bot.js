@@ -10,6 +10,8 @@ const { presence } = require("./persistent.json");
 const client = new Discord.Client({
 	ws: { intents: Discord.Intents.NON_PRIVILEGED },
 	disableMentions: "everyone",
+	messageCacheLifetime: 120,
+	messageSweepInterval: 300,
 	presence: { activity: { name: presence.activity || "", type: presence.type || "PLAYING" }, status: presence.status || "online" }
 });
 
@@ -74,4 +76,12 @@ client.on("warn", (warning) => {
 });
 process.on("unhandledRejection", (err) => { // this catches unhandledPromiserejectionWarning and other unhandled rejections
 	errorLog(err, "unhandledRejection", "oof something is broken x.x");
+});
+
+Object.defineProperty(Number.prototype, "toFixed", {
+	value: function(size){
+		// eslint-disable-next-line no-useless-escape
+		let re = new RegExp("^-?\\d+(?:\.\\d{0," + (size || -1) + "})?");
+		return this.toString().match(re)[0];
+	}
 });

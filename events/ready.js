@@ -26,4 +26,13 @@ module.exports = async (Discord, client) => {
 			}
 		});
 	}
+
+	client.setInterval(async function() {
+		if ((process.memoryUsage().heapUsed).toFixed(2) > 314572800) {
+			(new Discord.WebhookClient(log_hooks.core.id, log_hooks.core.token)).send(`🎛️ Rebooting shard ${client.shard.ids[0]} due to memory usage`, client);
+			setTimeout(function() {
+				process.exit();
+			}, 1000);
+		}
+	}, 60000); //Memory management every 30 minutes
 };

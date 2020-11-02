@@ -2,7 +2,7 @@ const { dbQuery, fetchUser } = require("../../coreFunctions");
 module.exports = {
 	controls: {
 		name: "confessban",
-		permission: 2,
+		permission: 3,
 		aliases: ["cbanlist", "cbl", "banlist"],
 		usage: "confessbanlist",
 		description: "Shows the list of blocked users",

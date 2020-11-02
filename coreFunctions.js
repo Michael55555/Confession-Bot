@@ -1,4 +1,4 @@
-const { log_hooks, developer, main_guild, global_mod } = require("./config.json");
+const { log_hooks, developer, main_guild, global_mod, trial_mod } = require("./config.json");
 const Discord = require("discord.js");
 let models = require("./utils/schemas");
 const { promises } = require("fs");
@@ -23,8 +23,9 @@ module.exports = {
 		if (!member || !member.id || !client) return 10;
 		if (developer.includes(member.id)) return 0;
 		if (client.guilds.cache.get(main_guild) && client.guilds.cache.get(main_guild).roles.cache.get(global_mod) && client.guilds.cache.get(main_guild).roles.cache.get(global_mod).members.has(member.id)) return 1;
+		if (client.guilds.cache.get(main_guild) && client.guilds.cache.get(main_guild).roles.cache.get(global_mod) && client.guilds.cache.get(main_guild).roles.cache.get(trial_mod).members.has(member.id)) return 2;
 		if ((await module.exports.dbQuery("User", { id: member.id })).blocked) return 11;
-		if (member.guild && (member.permissions.has("KICK_MEMBERS") || member.permissions.has("BAN_MEMBERS"))) return 2;
+		if (member.guild && (member.permissions.has("KICK_MEMBERS") || member.permissions.has("BAN_MEMBERS"))) return 3;
 		return 10;
 	},
 	permLevelToRole: (permLevel) => {
@@ -36,6 +37,8 @@ module.exports = {
 		case 1:
 			return "Global Moderator";
 		case 2:
+			return "Trial Global Moderator";
+		case 3:
 			return "Server Staff";
 		case 10:
 			return "All Users";

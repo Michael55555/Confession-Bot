@@ -1,5 +1,5 @@
 const { dbQueryNoNew, fetchUser } = require("../../coreFunctions");
-const { global_mod, reports_channel } = require("../../config");
+const { trial_mod, reports_channel } = require("../../config");
 module.exports = {
 	controls: {
 		name: "report",
@@ -22,10 +22,15 @@ module.exports = {
 				.addField("Confession Author", `${u.tag} (\`${u.id}\`)`)
 				.addField("Guild", `${message.guild.name} (\`${message.guild.id}\`)`)
 				.addField("Reporter", `${message.author.tag} (\`${message.author.id}\`)`)
-				.addField("Action", `Use \`?admin block ${u.id} true\` to block the user from using the bot and clear their confessions`)
+				.addField("Global Moderator Actions", `Use \`?admin delete ${m.channel.id} ${m.id}\` to remove only this confession.\nUse \`?admin block ${u.id} true\` to block the user from using the bot and clear their confessions`)
 				.setFooter("")
 				.setColor("RED");
-			await client.shard.broadcastEval(`if (this.channels.cache.get("${reports_channel}")) this.channels.cache.get("${reports_channel}").send({ content: "<@&${global_mod}>", embed: ${JSON.stringify(embed)} })`);
+			await client.shard.broadcastEval(`if (this.channels.cache.get("${reports_channel}")) this.channels.cache.get("${reports_channel}").send({ content: "<@&${trial_mod}>", embed: ${JSON.stringify(embed)} }).then(m => {
+			let e = m.embeds[0];
+			e.fields.push({name: "Trial Mod Actions", value: "Use \`?admin flag " + m.id + "\` to flag this confession for global moderator review"});
+			m.edit({ content: "<@&${trial_mod}>", embed: e });
+			});
+	`);
 			return message.channel.send(":white_check_mark: Your report has been submitted. A global moderator will review your case and potentially take action against the user who submitted the confession. For privacy reasons, the outcome of your report will not be shared.");
 		} catch (e) {
 			console.log(e);

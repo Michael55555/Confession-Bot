@@ -18,6 +18,7 @@ module.exports = {
 				m.delete();
 			}, 5000));
 		}
+		message.channel.send("Generating server list... this may take anywhere from 10 seconds to 10 minutes - please wait");
 		let allGuilds = await client.shard.broadcastEval(`this.guilds.cache.filter(g => g.members.cache.get("${message.author.id}")).array();`);
 		let guilds = allGuilds.reduce((p, c) => p.concat(c), []);
 		let choiceEmbed = new Discord.MessageEmbed()
